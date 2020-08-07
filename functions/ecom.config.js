@@ -7,8 +7,8 @@
 
 const app = {
   app_id: 125183,
-  title: 'My Awesome E-Com Plus App',
-  slug: 'my-awesome-app',
+  title: 'Opiniões Verificadas',
+  slug: 'opinioes-verificadas',
   type: 'external',
   state: 'active',
   authentication: true,
