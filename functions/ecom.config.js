@@ -7,7 +7,7 @@
 
 const app = {
   app_id: 125183,
-  title: 'Opinioes Verificadas',
+  title: 'Opiniões Verificadas',
   slug: 'opinioes-verificadas',
   type: 'external',
   state: 'active',
