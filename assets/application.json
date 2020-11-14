@@ -13,18 +13,12 @@
     "procedures": [
       "POST"
     ],
-    "products": [],
-    "brands": [],
-    "categories": [],
-    "customers": [],
-    "orders": [],
-    "carts": [],
-    "orders/fulfillments": [],
-    "orders/payments_history": [],
-    "products/quantity": [],
-    "products/variations/quantity": [],
-    "products/price": [],
-    "products/variations/price": []
+    "products": [
+      "GET"
+    ],
+    "orders": [
+      "GET"
+    ]
   },
   "auth_callback_uri": "https://us-central1-ecom-opinioes-verificadas.cloudfunctions.net/app/ecom/auth-callback",
   "version": "1.0.0"
