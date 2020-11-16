@@ -12,9 +12,11 @@ const ECHO_SUCCESS = 'SUCCESS'
 const ECHO_SKIP = 'SKIP'
 const ECHO_API_ERROR = 'STORE_API_ERR'
 
-exports.post = ({ appSdk }, req, res) => {
+exports.post = async ({ appSdk, admin }, req, res) => {
   // receiving notification from Store API
   const { storeId } = req
+  // firebase db collection
+  const fbCollection = admin.firestore().collection('ov_orders')
 
   /**
    * Treat E-Com Plus trigger body here
@@ -26,38 +28,50 @@ exports.post = ({ appSdk }, req, res) => {
     return res.send(ECHO_SKIP)
   }
 
-  // get app configured options
-  return getAppData({ appSdk, storeId }).then((configObj) => {
-    return appSdk.apiRequest(storeId, `orders/${resourceId}.json`).then(({ response }) => ({ response, configObj }))
-  }).then(({ response, configObj }) => {
-    const { data } = response
-    // skip if not delivered
-    if (!data.fulfillment_status ||
-      !data.fulfillment_status.current ||
-      data.fulfillment_status.current !== 'delivered') {
-      return res.send(ECHO_SKIP)
-    }
+  // check if exist in collection
+  await fbCollection.doc(resourceId).get().then((doc) => {
+    if (!doc.exists) {
+      // get app configured options
+      return getAppData({ appSdk, storeId }).then((configObj) => {
+        return appSdk.apiRequest(storeId, `orders/${resourceId}.json`).then(({ response }) => ({ response, configObj }))
+      }).then(({ response, configObj }) => {
+        const { data } = response
+        // skip if not delivered
+        if (!data.fulfillment_status ||
+          !data.fulfillment_status.current ||
+          data.fulfillment_status.current !== 'delivered') {
+          return res.send(ECHO_SKIP)
+        }
 
-    return sendReviews(storeId, appSdk, data, configObj)
-  }).then((result) => {
-    console.log('Pedidos enviados com sucesso', result)
-    return res.send(ECHO_SUCCESS)
-  }).catch(err => {
-    console.error(err)
-    if (err.name === SKIP_TRIGGER_NAME) {
-      // trigger ignored by app configuration
-      res.send(ECHO_SKIP)
-    } else {
-      // console.error(err)
-      // request to Store API with error response
-      // return error status code
-      res.status(500)
-      const { message } = err
-      res.send({
-        error: ECHO_API_ERROR,
-        message
+        return sendReviews(storeId, appSdk, data, configObj)
+      }).then((result) => {
+        console.log('Pedidos enviados com sucesso', result)
+        fbCollection.doc(resourceId).set({
+          success: true,
+          storeId
+        })
+
+        return res.send(ECHO_SUCCESS)
+      }).catch(err => {
+        console.error(err)
+        if (err.name === SKIP_TRIGGER_NAME) {
+          // trigger ignored by app configuration
+          res.send(ECHO_SKIP)
+        } else {
+          // console.error(err)
+          // request to Store API with error response
+          // return error status code
+          res.status(500)
+          const { message } = err
+          res.send({
+            error: ECHO_API_ERROR,
+            message
+          })
+        }
       })
     }
+
+    return res.send(ECHO_SKIP)
   })
 }
 
@@ -71,7 +85,7 @@ const sendReviews = (storeId, appSdk, order, configObj) => {
         idWebsite: configObj.id_website,
         message: JSON.stringify(transaction)
       }
-  
+
       return axios({
         baseURL: getBaseUrl(configObj.account_country),
         url: '/index.php?' +
@@ -90,14 +104,14 @@ const sendReviews = (storeId, appSdk, order, configObj) => {
           console.info('TransactionBody', transaction)
           throw err
         }
-  
+
         return {
           storeId,
           order: order.number
         }
       })
     })
-  
+
     return Promise.all(promises)
   })
 }
