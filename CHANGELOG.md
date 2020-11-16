@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.0.0 (2020-11-16)
+
+
+### Features
+
+* **webhook:** save order to prevent duplicated request ([e82ae60](https://github.com/ecomplus/application-starter/commit/e82ae60f81d9de643121ebc2b78f70a97c7d2ade))
+* **webhook:** send delivered orders to opinioes verificadas ws ([5983659](https://github.com/ecomplus/application-starter/commit/5983659b199400ed00809ec9ec7e0d5ddda05092))
+
+
+### Bug Fixes
+
+* **deps:** @ecomplus/application-sdk@firestore to v22 ([51281a8](https://github.com/ecomplus/application-starter/commit/51281a8ac3e074cc1e309d98c7d92c4bb94fff1f))
+* **refresh-tokens:** add scheduled cloud function to run update ([2e789e7](https://github.com/ecomplus/application-starter/commit/2e789e7d69f65a375c359845813296f47280dff4))
+
 ## [1.0.0-starter.14](https://github.com/ecomplus/application-starter/compare/v1.0.0-starter.13...v1.0.0-starter.14) (2020-06-30)
 
 
