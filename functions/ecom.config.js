@@ -7,7 +7,7 @@
 
 const app = {
   app_id: 125183,
-  title: 'Opiniões Verificadas',
+  title: 'Opiniões Verificadas (BETA)',
   slug: 'opinioes-verificadas',
   type: 'external',
   state: 'active',
@@ -72,6 +72,36 @@ const app = {
      * You can also set any other valid resource/subresource combination.
      * Ref.: https://developers.e-com.plus/docs/api/#/store/
      */
+  },
+
+  admin_settings: {
+    id_website: {
+      schema: {
+        type: 'string',
+        maxLength: 255,
+        title: 'ID Website',
+        description: 'Site de login. pode ser encontrado aqui https://www.opinioes-verificadas.com.br/index.php?page=mod_param_contact'
+      },
+      hide: true
+    },
+    secret_key: {
+      schema: {
+        type: 'string',
+        maxLength: 255,
+        title: 'Chave Secreta',
+        description: 'Chave secreta para identificação no envio dos pedidos para a plataforma. pode ser encontrado aqui https://www.opinioes-verificadas.com.br/index.php?page=mod_param_contact'
+      },
+      hide: true
+    },
+    account_country: {
+      schema: {
+        type: 'string',
+        enum: ['FR','ES','DE','IT','NL','UK','US','BR','PT','CO','PL','MX'],
+        title: 'País da Conta',
+        description: 'Escolha a opções correta ou o envio dos pedidos pode não funcionar corretamente.',
+      },
+      hide: true
+    }
   }
 }
 
