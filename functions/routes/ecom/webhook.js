@@ -1,5 +1,11 @@
+/* eslint-disable promise/no-nesting */
+const axios = require('axios')
+const qs = require('querystring')
+
 // read configured E-Com Plus app data
 const getAppData = require('./../../lib/store-api/get-app-data')
+const getBaseUrl = require('./../../lib/integration/get-base-url')
+const newTransaction = require('./../../lib/integration/new-transaction')
 
 const SKIP_TRIGGER_NAME = 'SkipTrigger'
 const ECHO_SUCCESS = 'SUCCESS'
@@ -15,41 +21,83 @@ exports.post = ({ appSdk }, req, res) => {
    * Ref.: https://developers.e-com.plus/docs/api/#/store/triggers/
    */
   const trigger = req.body
+  const resourceId = trigger.resource_id
+  if (!resourceId) {
+    return res.send(ECHO_SKIP)
+  }
 
   // get app configured options
-  getAppData({ appSdk, storeId })
+  return getAppData({ appSdk, storeId }).then((configObj) => {
+    return appSdk.apiRequest(storeId, `orders/${resourceId}.json`).then(({ response }) => ({ response, configObj }))
+  }).then(({ response, configObj }) => {
+    const { data } = response
+    // skip if not delivered
+    if (!data.fulfillment_status ||
+      !data.fulfillment_status.current ||
+      data.fulfillment_status.current !== 'delivered') {
+      return res.send(ECHO_SKIP)
+    }
 
-    .then(appData => {
-      if (
-        Array.isArray(appData.ignore_triggers) &&
-        appData.ignore_triggers.indexOf(trigger.resource) > -1
-      ) {
-        // ignore current trigger
-        const err = new Error()
-        err.name = SKIP_TRIGGER_NAME
-        throw err
+    return sendReviews(storeId, appSdk, data, configObj)
+  }).then((result) => {
+    console.log('Pedidos enviados com sucesso', result)
+    return res.send(ECHO_SUCCESS)
+  }).catch(err => {
+    console.error(err)
+    if (err.name === SKIP_TRIGGER_NAME) {
+      // trigger ignored by app configuration
+      res.send(ECHO_SKIP)
+    } else {
+      // console.error(err)
+      // request to Store API with error response
+      // return error status code
+      res.status(500)
+      const { message } = err
+      res.send({
+        error: ECHO_API_ERROR,
+        message
+      })
+    }
+  })
+}
+
+const sendReviews = (storeId, appSdk, order, configObj) => {
+  return appSdk.apiRequest(storeId, 'stores/me.json').then(({ response }) => {
+    const store = response.data
+    return newTransaction(order, configObj, storeId, appSdk, store)
+  }).then(({ transactions }) => {
+    const promises = transactions.map(transaction => {
+      const data = {
+        idWebsite: configObj.id_website,
+        message: JSON.stringify(transaction)
       }
-
-      /* DO YOUR CUSTOM STUFF HERE */
-
-      // all done
-      res.send(ECHO_SUCCESS)
+  
+      return axios({
+        baseURL: getBaseUrl(configObj.account_country),
+        url: '/index.php?' +
+          'action=act_api_notification_sha1&' +
+          'type=json2',
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: qs.stringify(data)
+      }).then(({ data }) => {
+        if (parseInt(data.return, 10) !== 1) {
+          const err = new Error(`[#${storeId}] Envio do pedido ${order.number} falhou.`)
+          err.name = 'bodyErr'
+          err.response = data.debug
+          console.info('TransactionBody', transaction)
+          throw err
+        }
+  
+        return {
+          storeId,
+          order: order.number
+        }
+      })
     })
-
-    .catch(err => {
-      if (err.name === SKIP_TRIGGER_NAME) {
-        // trigger ignored by app configuration
-        res.send(ECHO_SKIP)
-      } else {
-        // console.error(err)
-        // request to Store API with error response
-        // return error status code
-        res.status(500)
-        const { message } = err
-        res.send({
-          error: ECHO_API_ERROR,
-          message
-        })
-      }
-    })
+  
+    return Promise.all(promises)
+  })
 }
