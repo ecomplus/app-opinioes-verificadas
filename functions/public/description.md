@@ -1,3 +1,8 @@
-# My Awesome E-Com Plus App
+# Opiniões Verificadas 
 
-Somethings about my app and what it does...
+- Envie de forma automatica seus pedidos para Opiniões Verificadas
+
+- Receba/Exiba avaliação na página dos produtos
+
+ ___
+ Aplicativo em fase beta, dúvidas/inconsistencias; [Comunidade](https://community.e-com.plus/).
