@@ -56,7 +56,7 @@ module.exports = (order, appConfig, storeId, appSdk, store) => {
         phone: buyer.phones[0].number,
         order_date: createdAt(),
         firstname: name.given_name || buyer.display_name,
-        lastname: name.middle_name,
+        lastname: name.middle_name || buyer.family_name,
         channel: 'online',
         id_shop: storeId,
         query: 'pushCommandeSHA1',
