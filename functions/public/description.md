@@ -39,4 +39,4 @@ Entre no site conforme exemplo abaixo:
 ![exemplo_produto](https://us-central1-ecom-opinioes-verificadas.cloudfunctions.net/app/img/6.png)
 
  ___
- Aplicativo em fase beta, dúvidas/inconsistencias acesse nossa [Comunidade](https://community.e-com.plus/).
+ Aplicativo em fase beta, dúvidas/inconsistências acesse nossa [Comunidade](https://community.e-com.plus/).
