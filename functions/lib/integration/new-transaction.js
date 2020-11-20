@@ -4,7 +4,7 @@ const sha1 = require('sha1')
 module.exports = (order, appConfig, storeId, appSdk, store) => {
   return new Promise(async (resolve) => {
     const transactions = []
-    const produtos = {}
+    const PRODUCTS = []
     const { buyers, items } = order
 
     const promises = items.map((item, index) => {
@@ -12,27 +12,27 @@ module.exports = (order, appConfig, storeId, appSdk, store) => {
         const product = response.data
         const image = product.pictures.find(picture => picture.normal && picture.normal.url)
 
-        produtos[index] = {
+        PRODUCTS[index] = {
           id_product: item.product_id,
           name_product: product.name,
           url_product: product.permalink || `${store.homepage}/${product.slug}`,
-          url_image_product: image.normal.url,
+          url_product_image: image.normal.url,
           sku: product.sku
         }
 
         if (product.brands && Array.isArray(product.brands)) {
-          produtos[index].brand_name = product.brands[0].name
+          PRODUCTS[index].brand_name = product.brands[0].name
         }
 
         if (product.gtin && Array.isArray(product.gtin)) {
-          produtos[index].gtin_ean = product.gtin[0]
+          PRODUCTS[index].GTIN_EAN = product.gtin[0]
         }
 
         if (product.mpn && Array.isArray(product.mpn)) {
-          produtos[index].mpn = product.mpn[0]
+          PRODUCTS[index].MPN = product.mpn[0]
         }
 
-        return produtos
+        return PRODUCTS
       })
     })
 
@@ -60,7 +60,7 @@ module.exports = (order, appConfig, storeId, appSdk, store) => {
         channel: 'online',
         id_shop: storeId,
         query: 'pushCommandeSHA1',
-        produtos
+        PRODUCTS
       }
 
       if (appConfig.delay) {
