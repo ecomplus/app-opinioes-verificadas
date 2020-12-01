@@ -45,7 +45,12 @@ exports.post = async ({ appSdk, admin }, req, res) => {
 
         return sendReviews(storeId, appSdk, data, configObj)
       }).then((result) => {
-        console.log('Pedidos enviados com sucesso', result)
+        console.log('Pedidos enviados com sucesso', {
+          result,
+          storeId,
+          resourceId
+        })
+
         fbCollection.doc(resourceId).set({
           success: true,
           storeId
@@ -56,14 +61,20 @@ exports.post = async ({ appSdk, admin }, req, res) => {
         console.error(err)
         if (err.name === SKIP_TRIGGER_NAME) {
           // trigger ignored by app configuration
-          res.send(ECHO_SKIP)
+          return res.send(ECHO_SKIP)
         } else {
           // console.error(err)
           // request to Store API with error response
           // return error status code
+          console.error('Envio do pedido falou', {
+            err,
+            storeId,
+            resourceId
+          })
+
           res.status(500)
           const { message } = err
-          res.send({
+          return res.send({
             error: ECHO_API_ERROR,
             message
           })
@@ -101,7 +112,6 @@ const sendReviews = (storeId, appSdk, order, configObj) => {
           const err = new Error(`[#${storeId}] Envio do pedido ${order.number} falhou.`)
           err.name = 'bodyErr'
           err.response = data.debug
-          console.info('TransactionBody', transaction)
           throw err
         }
 
