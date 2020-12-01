@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/ecomplus/application-starter/compare/v1.0.0...v1.0.1) (2020-12-01)
+
+
+### Bug Fixes
+
+* using family_name when middle_name is undefined ([564ab99](https://github.com/ecomplus/application-starter/commit/564ab99b05aae5d8ca02b46d404d4399d9f162b4))
+* using family_name when middle_name is undefined ([0675713](https://github.com/ecomplus/application-starter/commit/0675713b362711eb2d17e522a027894f6dd97158))
+* **ecomplus-market.json:** update short_description and category ([56fe377](https://github.com/ecomplus/application-starter/commit/56fe377a9f7c94e5214a311825c489dba624822d))
+* **new-transaction:** products info ([a57a829](https://github.com/ecomplus/application-starter/commit/a57a829bca9cc6e85bc4bb84ef45ec06923cc167))
+* **webhook:** return statements ([d7f3a4c](https://github.com/ecomplus/application-starter/commit/d7f3a4c5e4142a5718afc15c7413ea97061c8d9d))
+
 ## 1.0.0 (2020-11-16)
 
 
