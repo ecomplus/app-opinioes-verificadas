@@ -1,6 +1,6 @@
 {
   "app_id": 125183,
-  "title": "Opiniões Verificadas (BETA)",
+  "title": "Opiniões Verificadas",
   "slug": "opinioes-verificadas",
   "type": "external",
   "state": "active",
@@ -63,5 +63,5 @@
     }
   },
   "auth_callback_uri": "https://us-central1-ecom-opinioes-verificadas.cloudfunctions.net/app/ecom/auth-callback",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
