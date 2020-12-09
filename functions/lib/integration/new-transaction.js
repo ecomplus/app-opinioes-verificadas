@@ -13,7 +13,7 @@ module.exports = (order, appConfig, storeId, appSdk, store) => {
         const image = product.pictures.find(picture => picture.normal && picture.normal.url)
 
         PRODUCTS[index] = {
-          id_product: item.product_id,
+          id_product: product.sku,
           name_product: product.name,
           url_product: product.permalink || `${store.homepage}/${product.slug}`,
           url_product_image: image.normal.url,
