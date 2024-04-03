@@ -40,14 +40,15 @@ exports.post = async ({ appSdk, admin }, req, res) => {
           data.financial_status && 
           data.financial_status.current === 'paid'
 
-        if (sendOrderPaid || 
-            (data.fulfillment_status && data.fulfillment_status.current === 'delivered')
-        ) {
-          return sendReviews(storeId, appSdk, data, configObj)
-        } else {
-          // skip if not delivered or paid
-          return res.send(ECHO_SKIP)
+        if (!sendOrderPaid) {
+          if (!data.fulfillment_status ||
+            !data.fulfillment_status.current ||
+            data.fulfillment_status.current !== 'delivered') {
+              // skip if not delivered or paid
+              return res.send(ECHO_SKIP)
+          }
         }
+        return sendReviews(storeId, appSdk, data, configObj)
       }).then((result) => {
         console.log('Pedidos enviados com sucesso', {
           result,
