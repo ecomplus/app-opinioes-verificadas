@@ -101,6 +101,15 @@ const app = {
         description: 'Escolha a opções correta ou o envio dos pedidos pode não funcionar corretamente.',
       },
       hide: true
+    },
+    send_order_paid: {
+      schema: {
+        type: 'boolean',
+        default: false,
+        title: 'Enviar pedido para Opiniões Verificadas após aprovação do pedido',
+        description: 'Caso ativado, o pedido será enviado assim que aprovado e não mais ao mudar status para entregue',
+      },
+      hide: true
     }
   }
 }
@@ -121,6 +130,10 @@ procedures.push({
     {
       resource: 'orders',
       field: 'fulfillment_status',
+    },
+    {
+      resource: 'orders',
+      field: 'financial_status',
     }
   ],
 
