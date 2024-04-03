@@ -107,7 +107,7 @@ const app = {
         type: 'boolean',
         default: false,
         title: 'Enviar pedido para Opiniões Verificadas após aprovação do pedido',
-        description: 'Caso ativado, o pedido será enviado assim que aprovado e não mais ao mudar status para entregue',
+        description: 'Ao ativar, o pedido será enviado assim que aprovado e não mais ao mudar status para entregue',
       },
       hide: true
     }
